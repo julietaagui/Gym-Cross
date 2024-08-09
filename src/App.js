@@ -1,44 +1,68 @@
 import './App.css';
-import Init from './views/index';
-import { BrowserRouter as Router, Routes, Route, NavLink } from "react-router-dom";
-import { useState } from 'react'; 
+import Init from './views';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import moment from 'moment'; //Librería para manejar fechas y tiempos en JavaScript.
+import 'moment/locale/es'; // Configura moment para usar español
+
+moment.locale('es'); // Configura moment para usar español
 
 function App() {
-
-  const [themeMode, setThemeMode] = useState('light');
+  const [themeMode, setThemeMode] = useState('light'); // tema
+  const [dates, setDates] = useState([]); //date, para almacenar una lista de fechas
 
   const changeTheme = () => {
     setThemeMode(themeMode === 'light' ? 'dark' : 'light');
   }
-  
+
+  useEffect(() => {
+    const startDate = moment().startOf('month');//establece uel rango de fechas desde el inicio del mes...
+    const endDate = moment().endOf('week'); // hasta el final de la semana
+    const days = [];
+
+    while (startDate <= endDate) {
+      days.push({       // Se llena un arreglo con las fechas:
+        day: startDate.format('D'), //numero de dia
+        dayOfWeek: startDate.format('ddd'), // nombre del dia 
+        isCurrentDay: startDate.isSame(moment(), 'day') //indica dia actual
+      });
+      startDate.add(1, 'days');
+    }
+
+    setDates(days); // Actualiza el estado "dates" con el arreglo de fechas generado
+  }, []);
 
   return (
-    
-      <div className={`App bg-body-${themeMode}`}>
-        <nav className={`navbar navbar-expand-lg navbar-dark bg-dark flex-column ${themeMode}`}>
-          <div className="container-fluid">
-            <div className="collapse navbar-collapse justify-content-end" id="navbarText">
-            </div>
+    <div className={`App bg-body-${themeMode}`}>
+      <nav className={`navbar navbar-expand-lg navbar-dark bg-dark flex-column ${themeMode}`}>
+        <div className="container-fluid d-flex flex-column align-items-start">
+          <div className="mb-4">
+            <h4 className="text-white">Hola, Julieta</h4>
           </div>
-          <a className='nav-link text-white me-3' href='#' onClick={changeTheme}>
-              {themeMode === 'light' ? <i className='bi bi-toggle-off fs-3'></i>:
-              <i className='bi bi-toggle-on fs-3'></i>}
-            </a>
-        </nav>
-
-        <div class="card text-center mb-3" style={{ Width: "18rem" }}>
-            <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
+          <div className="d-flex align-items-center mt-auto">
+            <div className="bg-success rounded-circle text-white p-2 text-center me-2">
+              <strong>{moment().format('MMM')}</strong>
             </div>
+            <ul className="list-unstyled d-flex ms-3">
+              {dates.map((date, index) => (
+                //Imprime en el DOM las fechas
+                <li key={index} className={`px-2 text-center ${date.isCurrentDay ? 'text-warning' : 'text-white'}`}>
+                  <span>{date.day}</span><br/>
+                  <small>{date.dayOfWeek}</small>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
+        <a className='nav-link text-white me-3 mt-4' href='#' onClick={changeTheme}>
+          {themeMode === 'light' ? <i className='bi bi-toggle-off fs-3'></i> : <i className='bi bi-toggle-on fs-3'></i>}
+        </a>
+      </nav>
 
-        
       <Router>
-            <Routes>
-              <Route path='/' element={<Init themeMode={themeMode}/>}/>
-            </Routes>
+        <Routes>
+          <Route path='/' element={<Init themeMode={themeMode} />} />
+        </Routes>
       </Router>
     </div>
   );
