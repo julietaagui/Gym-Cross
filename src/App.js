@@ -8,12 +8,9 @@ import 'moment/locale/es'; // Configura moment para usar español
 moment.locale('es'); // Configura moment para usar español
 
 function App() {
-  const [themeMode, setThemeMode] = useState('light'); // tema
+  
   const [dates, setDates] = useState([]); //date, para almacenar una lista de fechas
 
-  const changeTheme = () => {
-    setThemeMode(themeMode === 'light' ? 'dark' : 'light');
-  }
 
   useEffect(() => {
     const startDate = moment().startOf('month');//establece uel rango de fechas desde el inicio del mes...
@@ -33,35 +30,35 @@ function App() {
   }, []);
 
   return (
-    <div className={`App bg-body-${themeMode}`}>
-      <nav className={`navbar navbar-expand-lg navbar-dark bg-dark flex-column ${themeMode}`}>
-        <div className="container-fluid d-flex flex-column align-items-start">
-          <div className="mb-4">
-            <h4 className="text-white">Hola, Julieta</h4>
-          </div>
-          <div className="d-flex align-items-center mt-auto">
-            <div className="bg-success rounded-circle text-white p-2 text-center me-2">
-              <strong>{moment().format('MMM')}</strong>
-            </div>
-            <ul className="list-unstyled d-flex ms-3">
-              {dates.map((date, index) => (
-                //Imprime en el DOM las fechas
-                <li key={index} className={`px-2 text-center ${date.isCurrentDay ? 'text-warning' : 'text-white'}`}>
-                  <span>{date.day}</span><br/>
-                  <small>{date.dayOfWeek}</small>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <a className='nav-link text-white me-3 mt-4' href='#' onClick={changeTheme}>
-          {themeMode === 'light' ? <i className='bi bi-toggle-off fs-3'></i> : <i className='bi bi-toggle-on fs-3'></i>}
-        </a>
-      </nav>
+    <div className={`bg-body`}>
+      <div class="bg-dark">
+      <div className="container-fluid d-flex flex-column">
+  <div className="mb-4">
+    <h4 className="text-white">Hola, Julieta</h4>
+  </div>
+  <div className="d-flex align-items-left mt-auto ms-auto">
+    <div className="bg-success rounded-circle text-white p-2 text-center me-2">
+      <strong>{moment().format('MMM')}</strong>
+    </div>
+    <ul className="list-unstyled d-flex ms-3">
+      {dates.map((date, index) => (
+        //Imprime en el DOM las fechas
+        <li key={index} className={`px-2 text-center ${date.isCurrentDay ? 'text-warning' : 'text-white'}`}>
+          <span>{date.day}</span><br/>
+          <small>{date.dayOfWeek}</small>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
 
+        <a className='nav-link text-white me-3 mt-4' href='#'>
+           <i className='bi bi-toggle-off fs-3'></i><i className='bi bi-toggle-on fs-3'></i>
+        </a>
+      </div>
       <Router>
         <Routes>
-          <Route path='/' element={<Init themeMode={themeMode} />} />
+          <Route path='/' element={<Init/>} />
         </Routes>
       </Router>
     </div>
